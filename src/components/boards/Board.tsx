@@ -1,0 +1,64 @@
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+import { moveTask } from '../../store/slices/tasksSlice';
+import { Column } from './Column';
+
+export const Board = () => {
+  const dispatch = useAppDispatch();
+  const { columns, tasks } = useAppSelector((state) => state.tasks);
+  const currentBoardId = useAppSelector((state) => state.boards.currentBoardId);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: (event) => {
+        if (event.key === 'ArrowLeft') return { x: -1, y: 0 };
+        if (event.key === 'ArrowRight') return { x: 1, y: 0 };
+        return { x: 0, y: 0 };
+      },
+    }),
+  );
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    dispatch(
+      moveTask({
+        taskId: active.id,
+        newColumnId: over.data.current?.columnId || over.id,
+      }),
+    );
+  };
+
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <div style={{ display: 'flex', gap: '16px' }}>
+        <SortableContext
+          items={Object.values(columns).map((col) => col.id)}
+          strategy={horizontalListSortingStrategy}
+        >
+          {Object.values(columns).map((column) => (
+            <Column
+              key={column.id}
+              id={column.id}
+              title={column.title}
+              tasks={tasks.filter(
+                (task) => task.columnId === column.id && task.boardId === currentBoardId,
+              )}
+            />
+          ))}
+        </SortableContext>
+      </div>
+    </DndContext>
+  );
+};
