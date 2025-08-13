@@ -3,12 +3,12 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_AUTH_DOMAIN',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_STORAGE_BUCKET',
-  messagingSenderId: 'YOUR_SENDER_ID',
-  appId: 'YOUR_APP_ID',
+  apiKey: 'AIzaSyBIYYLlDxvHpp0wnRetuKxX2tIz_nZjPTk',
+  authDomain: 'task-management-system-435f7.firebaseapp.com',
+  projectId: 'task-management-system-435f7',
+  storageBucket: 'task-management-system-435f7.firebasestorage.app',
+  messagingSenderId: '1070120137941',
+  appId: '1:1070120137941:web:bc46fee2fdcc1542ed9e5c',
 };
 
 const app = initializeApp(firebaseConfig);

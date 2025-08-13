@@ -13,17 +13,25 @@ export const LoginPage = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(signInWithEmail(email, password)).then(() => {
+    const success = await dispatch(signInWithEmail(email, password));
+    if (success) {
       navigate(from, { replace: true });
-    });
+    } else {
+      // Можно показать ошибку пользователю
+      console.log('Login failed');
+    }
   };
 
-  const handleGoogleSignIn = () => {
-    dispatch(signInWithGoogle()).then(() => {
+  const handleGoogleSignIn = async () => {
+    const success = await dispatch(signInWithGoogle());
+    if (success) {
       navigate(from, { replace: true });
-    });
+    } else {
+      // Можно показать ошибку пользователю
+      console.log('Google login failed');
+    }
   };
 
   return (
