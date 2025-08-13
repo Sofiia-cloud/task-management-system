@@ -5,6 +5,7 @@ import { BoardCard } from '../components/boards/BoardCard';
 import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 import { createBoard, fetchBoards } from '../services/api';
 import { setBoards } from '../store/slices/boardsSlice';
+import styles from './HomePage.module.css';
 
 export const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -41,24 +42,16 @@ export const HomePage = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>
+    <div className={styles.container}>
+      <Typography variant="h4" gutterBottom className={styles.header}>
         My Boards
       </Typography>
-      <Button variant="contained" onClick={handleCreateBoard} style={{ marginBottom: '20px' }}>
+      <Button variant="contained" onClick={handleCreateBoard} className={styles.createButton}>
         Create New Board
       </Button>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: '24px',
-        }}
-      >
+      <div className={styles.boardsGrid}>
         {boards.map((board) => (
-          <div key={board.id}>
-            <BoardCard board={board} />
-          </div>
+          <BoardCard key={board.id} board={board} />
         ))}
       </div>
     </div>

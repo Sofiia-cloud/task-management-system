@@ -1,0 +1,40 @@
+.container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  color: #2e7d32 !important;
+  margin-bottom: 24px !important;
+  font-weight: 600 !important;
+}
+
+.createButton {
+  background-color: #81c784 !important;
+  color: white !important;
+  margin-bottom: 24px !important;
+  text-transform: none !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+}
+
+.createButton:hover {
+  background-color: #66bb6a !important;
+}
+
+.boardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .boardsGrid {
+    grid-template-columns: 1fr;
+  }
+}

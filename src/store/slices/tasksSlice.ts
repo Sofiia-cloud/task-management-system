@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Task } from '../../types';
+import { createTask as createTaskApi } from '../../services/api';
 
 interface TasksState {
   tasks: Task[];
@@ -34,17 +35,33 @@ const tasksSlice = createSlice({
     removeTask: (state, action: PayloadAction<string>) => {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
-    moveTask: (state, action: PayloadAction<{ taskId: string; newColumnId: string }>) => {
-      const task = state.tasks.find((t) => t.id === action.payload.taskId);
+    moveTask: (state, action) => {
+      const { taskId, newColumnId } = action.payload;
+      const task = state.tasks.find((t) => t.id === taskId);
       if (task) {
-        task.columnId = action.payload.newColumnId;
+        task.columnId = newColumnId;
       }
     },
     setTasks: (state, action: PayloadAction<Task[]>) => {
       state.tasks = action.payload;
     },
+    addTaskLocally: (state, action: PayloadAction<Task>) => {
+      state.tasks.push(action.payload);
+    },
   },
 });
 
-export const { addTask, removeTask, moveTask, setTasks } = tasksSlice.actions;
+export const createTask = createAsyncThunk(
+  'tasks/create',
+  async (taskData: Omit<Task, 'id'>, { rejectWithValue }) => {
+    try {
+      const taskId = await createTaskApi(taskData);
+      return { ...taskData, id: taskId };
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const { addTask, removeTask, moveTask, setTasks, addTaskLocally } = tasksSlice.actions;
 export default tasksSlice.reducer;

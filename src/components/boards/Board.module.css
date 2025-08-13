@@ -1,0 +1,15 @@
+.boardContainer {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  min-height: calc(100vh - 100px);
+  background-color: #f5faf7;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .boardContainer {
+    flex-direction: column;
+    padding: 10px;
+  }
+}

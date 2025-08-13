@@ -29,7 +29,10 @@ export const fetchTasks = async (boardId: string): Promise<Task[]> => {
 };
 
 export const createTask = async (task: Omit<Task, 'id'>): Promise<string> => {
-  const docRef = await addDoc(collection(db, 'tasks'), task);
+  const docRef = await addDoc(collection(db, 'tasks'), {
+    ...task,
+    createdAt: new Date().toISOString(),
+  });
   return docRef.id;
 };
 

@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 import { setCurrentBoard } from '../store/slices/boardsSlice';
 import { Board } from '../components/boards/Board';
 import { AppBar, Toolbar, Typography } from '@mui/material';
+import styles from './BoardPage.module.css';
 
 export const BoardPage = () => {
   const { boardId } = useParams();
@@ -17,17 +18,19 @@ export const BoardPage = () => {
   }, [boardId, dispatch]);
 
   if (!board) {
-    return <div>Board not found</div>;
+    return <div className={styles.notFound}>Board not found</div>;
   }
 
   return (
-    <div>
-      <AppBar position="static">
+    <div className={styles.container}>
+      <AppBar position="static" className={styles.appBar}>
         <Toolbar>
-          <Typography variant="h6">{board.title}</Typography>
+          <Typography variant="h6" className={styles.title}>
+            {board.title}
+          </Typography>
         </Toolbar>
       </AppBar>
-      <div style={{ padding: '20px' }}>
+      <div className={styles.boardContainer}>
         <Board />
       </div>
     </div>

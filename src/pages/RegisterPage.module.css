@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5faf7;
+  padding: 16px;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 500px;
+}
+
+.paper {
+  padding: 32px;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.title {
+  color: #2e7d32 !important;
+  margin-bottom: 24px !important;
+  font-weight: 600 !important;
+}
+
+.input {
+  margin-bottom: 16px !important;
+}
+
+.input label {
+  color: #2e7d32 !important;
+}
+
+.input .MuiOutlinedInput-root {
+  border-radius: 8px !important;
+}
+
+.input .MuiOutlinedInput-notchedOutline {
+  border-color: #a5d6a7 !important;
+}
+
+.submitButton {
+  background-color: #81c784 !important;
+  color: white !important;
+  margin: 20px 0 !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
+  text-transform: none !important;
+}
+
+.submitButton:hover {
+  background-color: #66bb6a !important;
+}
+
+.linkText {
+  color: #4b636e !important;
+}
+
+.link {
+  color: #2e7d32 !important;
+  text-decoration: none !important;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline !important;
+}

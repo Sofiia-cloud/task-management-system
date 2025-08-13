@@ -1,0 +1,37 @@
+/* Drag and drop animations */
+.dragOverlay {
+  opacity: 0.9;
+  transform: scale(1.02);
+  box-shadow: 0 0 0 2px var(--primary) !important;
+  z-index: 1000;
+}
+
+/* Task enter animation */
+@keyframes taskEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.taskEnter {
+  animation: taskEnter 0.3s ease forwards;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation: fadeIn 0.3s ease forwards;
+}

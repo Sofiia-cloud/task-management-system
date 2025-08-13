@@ -1,0 +1,30 @@
+.container {
+  min-height: 100vh;
+  background-color: #f5faf7;
+}
+
+.appBar {
+  background-color: #81c784 !important;
+  box-shadow: none !important;
+}
+
+.title {
+  flex-grow: 1;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.boardContainer {
+  padding: 24px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.notFound {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #2e7d32;
+  font-size: 1.5rem;
+}

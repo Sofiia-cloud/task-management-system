@@ -1,0 +1,52 @@
+.dialog {
+  border-radius: 12px !important;
+}
+
+.title {
+  background-color: #e8f5e9 !important;
+  color: #2e7d32 !important;
+  padding: 16px 24px !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.content {
+  padding: 20px !important;
+  background-color: #f5faf7 !important;
+}
+
+.field {
+  margin-bottom: 16px !important;
+}
+
+.field label {
+  color: #2e7d32 !important;
+}
+
+.field .MuiOutlinedInput-root {
+  border-radius: 8px !important;
+}
+
+.field .MuiOutlinedInput-notchedOutline {
+  border-color: #a5d6a7 !important;
+}
+
+.actions {
+  padding: 16px !important;
+  background-color: #f5faf7 !important;
+  border-radius: 0 0 12px 12px !important;
+}
+
+.button {
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  text-transform: none !important;
+}
+
+.primaryButton {
+  background-color: #81c784 !important;
+  color: white !important;
+}
+
+.primaryButton:hover {
+  background-color: #66bb6a !important;
+}

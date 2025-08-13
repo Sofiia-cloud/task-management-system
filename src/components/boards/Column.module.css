@@ -1,0 +1,56 @@
+.column {
+  min-width: 300px;
+  max-width: 300px;
+  background-color: #e8f5e9;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.column:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.columnHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #c8e6c9;
+}
+
+.columnTitle {
+  margin: 0;
+  color: #2e7d32;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.addButton {
+  background-color: #81c784 !important;
+  color: white !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  padding: 5px 12px !important;
+  font-size: 0.9rem !important;
+}
+
+.addButton:hover {
+  background-color: #66bb6a !important;
+}
+
+.tasksContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 40px;
+}
+
+@media (max-width: 768px) {
+  .column {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}

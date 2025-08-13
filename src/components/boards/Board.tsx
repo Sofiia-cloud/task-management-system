@@ -5,11 +5,13 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { moveTask } from '../../store/slices/tasksSlice';
 import { Column } from './Column';
+import styles from './Board.module.css';
 
 export const Board = () => {
   const dispatch = useAppDispatch();
@@ -27,22 +29,26 @@ export const Board = () => {
     }),
   );
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
 
     dispatch(
       moveTask({
-        taskId: active.id,
-        newColumnId: over.data.current?.columnId || over.id,
+        taskId: active.id.toString(),
+        newColumnId: over.data.current?.columnId || over.id.toString(),
       }),
     );
   };
 
+  if (!currentBoardId) {
+    return <div>Please select a board first</div>;
+  }
+
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <div style={{ display: 'flex', gap: '16px' }}>
+      <div className={styles.boardContainer}>
         <SortableContext
           items={Object.values(columns).map((col) => col.id)}
           strategy={horizontalListSortingStrategy}
@@ -52,9 +58,8 @@ export const Board = () => {
               key={column.id}
               id={column.id}
               title={column.title}
-              tasks={tasks.filter(
-                (task) => task.columnId === column.id && task.boardId === currentBoardId,
-              )}
+              tasks={tasks.filter((task) => task.columnId === column.id)}
+              boardId={currentBoardId}
             />
           ))}
         </SortableContext>

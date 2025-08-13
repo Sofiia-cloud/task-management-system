@@ -1,34 +1,72 @@
+import { useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TaskCard } from './TaskCard';
+import { CreateTaskForm } from './CreateTaskForm';
+import { Button } from '@mui/material';
 import { Task } from '../../types';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+import { createTask } from '../../store/slices/tasksSlice';
+import styles from './Column.module.css';
 
 interface ColumnProps {
   id: string;
   title: string;
   tasks: Task[];
+  boardId: string;
 }
 
-export const Column = ({ id, title, tasks }: ColumnProps) => {
+export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
   const { setNodeRef } = useDroppable({ id });
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+
+  const handleTaskCreate = async (title: string, description?: string) => {
+    if (!user) return;
+
+    await dispatch(
+      createTask({
+        title,
+        description,
+        columnId: id,
+        boardId,
+        createdBy: user.uid,
+        createdAt: new Date().toISOString(),
+        order: tasks.length,
+      }),
+    );
+    setIsCreateFormOpen(false);
+  };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={{
-        margin: '8px',
-        minWidth: '250px',
-        backgroundColor: 'rgba(245, 245, 245, 0.5)',
-        borderRadius: '4px',
-        padding: '8px',
-      }}
-    >
-      <h3>{title}</h3>
+    <div ref={setNodeRef} className={styles.column}>
+      <div className={styles.columnHeader}>
+        <h3 className={styles.columnTitle}>{title}</h3>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => setIsCreateFormOpen(true)}
+          className={styles.addButton}
+        >
+          Add Task
+        </Button>
+      </div>
+
       <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
+        <div className={styles.tasksContainer}>
+          {tasks.map((task) => (
+            <TaskCard key={task.id} task={task} columnId={id} />
+          ))}
+        </div>
       </SortableContext>
+
+      <CreateTaskForm
+        open={isCreateFormOpen}
+        onClose={() => setIsCreateFormOpen(false)}
+        onCreate={handleTaskCreate}
+        boardId={boardId}
+      />
     </div>
   );
 };

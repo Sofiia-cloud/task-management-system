@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../hooks/hooks';
 import { registerWithEmail } from '../services/authService';
 import { TextField, Button, Paper, Typography, Link, Box } from '@mui/material';
+import styles from './RegisterPage.module.css';
 
 export const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -23,21 +24,10 @@ export const RegisterPage = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '50px',
-      }}
-    >
-      <Box
-        sx={{
-          width: { xs: '100%', sm: '80%', md: '60%', lg: '40%' },
-          maxWidth: '500px',
-        }}
-      >
-        <Paper sx={{ padding: '20px' }}>
-          <Typography variant="h5" align="center" gutterBottom>
+    <Box className={styles.container}>
+      <Box className={styles.formContainer}>
+        <Paper className={styles.paper}>
+          <Typography variant="h5" align="center" gutterBottom className={styles.title}>
             Register
           </Typography>
           <form onSubmit={handleSubmit}>
@@ -49,6 +39,7 @@ export const RegisterPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className={styles.input}
             />
             <TextField
               label="Password"
@@ -58,6 +49,7 @@ export const RegisterPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className={styles.input}
             />
             <TextField
               label="Confirm Password"
@@ -67,18 +59,16 @@ export const RegisterPage = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              className={styles.input}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ margin: '20px 0' }}
-            >
+            <Button type="submit" variant="contained" fullWidth className={styles.submitButton}>
               Register
             </Button>
-            <Typography align="center">
-              Already have an account? <Link href="/login">Sign In</Link>
+            <Typography align="center" className={styles.linkText}>
+              Already have an account?{' '}
+              <Link href="/login" className={styles.link}>
+                Sign In
+              </Link>
             </Typography>
           </form>
         </Paper>
