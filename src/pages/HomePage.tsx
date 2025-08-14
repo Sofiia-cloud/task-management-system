@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Typography } from '@mui/material';
+import { Button, Typography, Box, IconButton } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { BoardCard } from '../components/boards/BoardCard';
 import { CreateBoardDialog } from '../components/boards/CreateBoardDialog';
 import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 import { createBoard, fetchBoards, deleteBoard } from '../services/api';
 import { setBoards, addBoard, removeBoard } from '../store/slices/boardsSlice';
+import { logoutUser } from '../services/authService';
 import styles from './HomePage.module.css';
 
 export const HomePage = () => {
@@ -46,7 +48,6 @@ export const HomePage = () => {
         createdAt: new Date().toISOString(),
       };
 
-      // 1. Сначала добавляем доску локально
       const tempId = `temp-${Date.now()}`;
       dispatch(
         addBoard({
@@ -56,10 +57,8 @@ export const HomePage = () => {
         }),
       );
 
-      // 2. Затем создаем на сервере
       const newBoardId = await createBoard(newBoard);
 
-      // 3. Обновляем локальную версию с реальным ID
       dispatch(removeBoard(tempId));
       dispatch(
         addBoard({
@@ -69,11 +68,9 @@ export const HomePage = () => {
         }),
       );
 
-      // 4. Перенаправляем только после успешного создания
       navigate(`/board/${newBoardId}`);
     } catch (error) {
       console.error('Failed to create board:', error);
-      // Удаляем временную доску в случае ошибки
       dispatch(removeBoard(`temp-${Date.now()}`));
       alert('Failed to create board. Please try again.');
     } finally {
@@ -93,15 +90,30 @@ export const HomePage = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logoutUser()(dispatch);
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   if (isLoading) {
     return <div>Loading boards...</div>;
   }
 
   return (
     <div className={styles.container}>
-      <Typography variant="h4" gutterBottom className={styles.header}>
-        My Boards
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4" gutterBottom className={styles.header}>
+          My Boards
+        </Typography>
+        <IconButton onClick={handleLogout} className={styles.logoutButton} title="Logout">
+          <LogoutIcon />
+        </IconButton>
+      </Box>
+
       <Button
         variant="contained"
         onClick={handleCreateClick}

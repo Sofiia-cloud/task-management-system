@@ -29,6 +29,15 @@
   gap: 24px;
 }
 
+.logoutButton {
+  color: #e57373;
+  margin-left: 16px;
+}
+
+.logoutButton:hover {
+  background-color: rgba(229, 115, 115, 0.1);
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 16px;
