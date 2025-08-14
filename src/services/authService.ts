@@ -8,7 +8,6 @@ import {
 import { AppDispatch } from '../store';
 import { setUser, setError, setLoading, logout } from '../store/slices/authSlice';
 
-// Вспомогательная функция для обработки ошибок
 const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
     return error.message;
@@ -22,10 +21,10 @@ export const signInWithEmail =
       dispatch(setLoading(true));
       const result = await signInWithEmailAndPassword(auth, email, password);
       dispatch(setUser(result.user));
-      return true; // Успешный вход
+      return true;
     } catch (error) {
       dispatch(setError(getErrorMessage(error)));
-      return false; // Ошибка входа
+      return false;
     } finally {
       dispatch(setLoading(false));
     }
@@ -36,10 +35,10 @@ export const signInWithGoogle = () => async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     const result = await signInWithPopup(auth, googleProvider);
     dispatch(setUser(result.user));
-    return true; // Успешный вход
+    return true;
   } catch (error) {
     dispatch(setError(getErrorMessage(error)));
-    return false; // Ошибка входа
+    return false;
   } finally {
     dispatch(setLoading(false));
   }
@@ -51,10 +50,20 @@ export const registerWithEmail =
       dispatch(setLoading(true));
       const result = await createUserWithEmailAndPassword(auth, email, password);
       dispatch(setUser(result.user));
-      return true; // Успешная регистрация
-    } catch (error) {
-      dispatch(setError(getErrorMessage(error)));
-      return false; // Ошибка регистрации
+      return { success: true };
+    } catch (error: any) {
+      let errorMessage = 'Registration failed';
+
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'Email is already in use';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Password should be at least 6 characters';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Invalid email address';
+      }
+
+      dispatch(setError(errorMessage));
+      return { success: false, error: errorMessage };
     } finally {
       dispatch(setLoading(false));
     }
@@ -63,7 +72,7 @@ export const registerWithEmail =
 export const logoutUser = () => async (dispatch: AppDispatch) => {
   try {
     await signOut(auth);
-    dispatch(logout()); // Теперь logout доступен
+    dispatch(logout());
   } catch (error) {
     dispatch(setError(getErrorMessage(error)));
   }

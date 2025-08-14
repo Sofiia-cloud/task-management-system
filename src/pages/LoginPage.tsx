@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch } from '../hooks/hooks';
 import { signInWithEmail, signInWithGoogle } from '../services/authService';
-import { TextField, Button, Paper, Typography, Link, Box } from '@mui/material';
+import { TextField, Button, Paper, Typography, Link, Box, Alert } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import styles from './LoginPage.module.css';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,16 +17,34 @@ export const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await dispatch(signInWithEmail(email, password));
-    if (success) {
-      navigate(from, { replace: true });
+    setAuthError('');
+
+    try {
+      const success = await signInWithEmail(email, password)(dispatch);
+
+      if (success) {
+        navigate(from, { replace: true });
+      } else {
+        setAuthError('Wrong email or password');
+      }
+    } catch (error) {
+      setAuthError('Error occurred when logging in');
+      console.error('Login error:', error);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    const success = await dispatch(signInWithGoogle());
-    if (success) {
-      navigate(from, { replace: true });
+    setAuthError('');
+    try {
+      const success = await signInWithGoogle()(dispatch);
+      if (success) {
+        navigate(from, { replace: true });
+      } else {
+        setAuthError('Error logging in by Google');
+      }
+    } catch (error) {
+      setAuthError('Error occurred when logging in by Google');
+      console.error('Google login error:', error);
     }
   };
 
@@ -36,6 +55,14 @@ export const LoginPage = () => {
           <Typography variant="h5" align="center" gutterBottom className={styles.title}>
             Sign In
           </Typography>
+
+          {}
+          {authError && (
+            <Alert severity="error" className={styles.alert}>
+              {authError}
+            </Alert>
+          )}
+
           <form onSubmit={handleSubmit}>
             <TextField
               label="Email"
