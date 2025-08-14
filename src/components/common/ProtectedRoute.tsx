@@ -3,16 +3,16 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/hooks';
 
 interface ProtectedRouteProps {
-  children: React.ReactElement; // Используем ReactElement вместо JSX.Element
+  children: React.ReactNode;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user } = useAppSelector((state) => state.auth);
   const location = useLocation();
 
-  if (!user?.uid) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
