@@ -1,0 +1,54 @@
+.dialog {
+  border-radius: 12px;
+}
+
+.title {
+  padding: 16px 24px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.content {
+  padding: 20px 24px;
+}
+
+.inputField {
+  margin-bottom: 16px;
+}
+
+.inputField label {
+  color: #2e7d32 !important;
+}
+
+.inputField .MuiOutlinedInput-root {
+  border-radius: 8px !important;
+}
+
+.inputField .MuiOutlinedInput-notchedOutline {
+  border-color: #a5d6a7 !important;
+}
+
+.actions {
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.cancelButton {
+  color: #4b636e !important;
+  text-transform: none !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+}
+
+.createButton {
+  background-color: #81c784 !important;
+  color: white !important;
+  text-transform: none !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+}
+
+.createButton:hover {
+  background-color: #66bb6a !important;
+}

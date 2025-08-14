@@ -6,7 +6,7 @@ import styles from './BoardCard.module.css';
 
 interface BoardCardProps {
   board: Board;
-  onDelete: (boardId: string) => Promise<void>; // Меняем на обязательный пропс
+  onDelete: (boardId: string) => Promise<void>;
 }
 
 export const BoardCard = ({ board, onDelete }: BoardCardProps) => {
