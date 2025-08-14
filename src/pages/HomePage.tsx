@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 import { BoardCard } from '../components/boards/BoardCard';
 import { useAppDispatch, useAppSelector } from '../hooks/hooks';
-import { createBoard, fetchBoards } from '../services/api';
-import { setBoards } from '../store/slices/boardsSlice';
+import { createBoard, fetchBoards, deleteBoard } from '../services/api';
+import { setBoards, removeBoard } from '../store/slices/boardsSlice';
 import styles from './HomePage.module.css';
 
 export const HomePage = () => {
@@ -12,6 +12,7 @@ export const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
   const { boards } = useAppSelector((state) => state.boards);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadBoards = async () => {
@@ -20,6 +21,8 @@ export const HomePage = () => {
         dispatch(setBoards(boardsData));
       } catch (error) {
         console.error('Failed to load boards:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     loadBoards();
@@ -41,6 +44,21 @@ export const HomePage = () => {
     }
   };
 
+  const handleDeleteBoard = async (boardId: string) => {
+    if (window.confirm('Are you sure you want to delete this board?')) {
+      try {
+        await deleteBoard(boardId);
+        dispatch(removeBoard(boardId));
+      } catch (error) {
+        console.error('Failed to delete board:', error);
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading boards...</div>;
+  }
+
   return (
     <div className={styles.container}>
       <Typography variant="h4" gutterBottom className={styles.header}>
@@ -51,7 +69,7 @@ export const HomePage = () => {
       </Button>
       <div className={styles.boardsGrid}>
         {boards.map((board) => (
-          <BoardCard key={board.id} board={board} />
+          <BoardCard key={board.id} board={board} onDelete={handleDeleteBoard} />
         ))}
       </div>
     </div>
