@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Task } from '../../types';
-import { createTask as createTaskApi, deleteTask as deleteTaskApi } from '../../services/api';
+import {
+  createTask as createTaskApi,
+  deleteTask as deleteTaskApi,
+  fetchTasks as fetchTasksApi,
+} from '../../services/api';
 
 interface TasksState {
   tasks: Task[];
@@ -56,6 +60,12 @@ const tasksSlice = createSlice({
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+      })
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        state.tasks = [
+          ...state.tasks.filter((task) => task.boardId !== action.meta.arg),
+          ...action.payload,
+        ];
       });
   },
 });
@@ -78,6 +88,16 @@ export const deleteTask = createAsyncThunk(
     try {
       await deleteTaskApi(taskId);
       return taskId;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+export const fetchTasks = createAsyncThunk(
+  'tasks/fetch',
+  async (boardId: string, { rejectWithValue }) => {
+    try {
+      return await fetchTasksApi(boardId);
     } catch (error) {
       return rejectWithValue(error);
     }

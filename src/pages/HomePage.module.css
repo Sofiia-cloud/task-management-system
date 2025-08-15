@@ -38,6 +38,22 @@
   background-color: rgba(229, 115, 115, 0.1);
 }
 
+.emptyMessage {
+  grid-column: 1 / -1; /* Занимает всю ширину сетки */
+  text-align: center;
+  color: #757575;
+  padding: 40px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 16px;

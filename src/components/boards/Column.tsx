@@ -23,7 +23,7 @@ export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
   const { user } = useAppSelector((state) => state.auth);
 
   const handleTaskCreate = async (title: string, description?: string) => {
-    if (!user) return;
+    if (!user || !boardId) return;
 
     await dispatch(
       createTask({
@@ -36,7 +36,6 @@ export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
         order: tasks.length,
       }),
     );
-    setIsCreateFormOpen(false);
   };
 
   return (

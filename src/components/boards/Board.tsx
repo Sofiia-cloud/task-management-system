@@ -11,11 +11,16 @@ import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortabl
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { moveTask } from '../../store/slices/tasksSlice';
 import { Column } from './Column';
+import { Task } from '../../types';
 import styles from './Board.module.css';
 
-export const Board = () => {
+interface BoardProps {
+  tasks: Task[];
+}
+
+export const Board = ({ tasks }: BoardProps) => {
   const dispatch = useAppDispatch();
-  const { columns, tasks } = useAppSelector((state) => state.tasks);
+  const { columns } = useAppSelector((state) => state.tasks);
   const currentBoardId = useAppSelector((state) => state.boards.currentBoardId);
 
   const sensors = useSensors(

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './hooks';
-import { fetchTasks } from '../services/api';
-import { setTasks } from '../store/slices/tasksSlice';
+import { fetchTasks } from '../store/slices/tasksSlice';
 import { RootState } from '../store';
 
 export const useTasks = (boardId: string) => {
@@ -15,8 +14,7 @@ export const useTasks = (boardId: string) => {
 
     const loadTasks = async () => {
       try {
-        const tasks = await fetchTasks(boardId);
-        dispatch(setTasks(tasks));
+        await dispatch(fetchTasks(boardId)).unwrap();
       } catch (error) {
         console.error('Failed to load tasks:', error);
       }

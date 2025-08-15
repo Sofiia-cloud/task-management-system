@@ -12,10 +12,7 @@ import {
 import { Board, Task } from '../types';
 
 export const fetchBoards = async (userId: string): Promise<Board[]> => {
-  const q = query(
-    collection(db, 'boards'),
-    where('ownerId', '==', userId), // Фильтр по владельцу
-  );
+  const q = query(collection(db, 'boards'), where('ownerId', '==', userId));
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(
     (doc) =>
@@ -32,7 +29,7 @@ export const createBoard = async (
 ): Promise<string> => {
   const docRef = await addDoc(collection(db, 'boards'), {
     ...boardData,
-    ownerId: userId, // Добавляем владельца
+    ownerId: userId,
     createdAt: new Date().toISOString(),
   });
   return docRef.id;
@@ -43,10 +40,15 @@ export const deleteBoard = async (id: string): Promise<void> => {
 };
 
 export const fetchTasks = async (boardId: string): Promise<Task[]> => {
-  const querySnapshot = await getDocs(collection(db, 'tasks'));
-  return querySnapshot.docs
-    .map((doc) => ({ id: doc.id, ...doc.data() }) as Task)
-    .filter((task) => task.boardId === boardId);
+  const q = query(collection(db, 'tasks'), where('boardId', '==', boardId));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(
+    (doc) =>
+      ({
+        id: doc.id,
+        ...doc.data(),
+      }) as Task,
+  );
 };
 
 export const createTask = async (task: Omit<Task, 'id'>): Promise<string> => {
