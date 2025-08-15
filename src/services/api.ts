@@ -2,7 +2,6 @@ import { db } from './firebase';
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { Board, Task } from '../types';
 
-// Boards API
 export const fetchBoards = async (): Promise<Board[]> => {
   const querySnapshot = await getDocs(collection(db, 'boards'));
   return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Board);
@@ -20,7 +19,6 @@ export const deleteBoard = async (id: string): Promise<void> => {
   await deleteDoc(doc(db, 'boards', id));
 };
 
-// Tasks API
 export const fetchTasks = async (boardId: string): Promise<Task[]> => {
   const querySnapshot = await getDocs(collection(db, 'tasks'));
   return querySnapshot.docs
@@ -42,4 +40,9 @@ export const updateTask = async (taskId: string, updates: Partial<Task>): Promis
 
 export const deleteTask = async (taskId: string): Promise<void> => {
   await deleteDoc(doc(db, 'tasks', taskId));
+};
+
+export const createTaskApi = async (taskData: Omit<Task, 'id'>): Promise<Task> => {
+  const docRef = await addDoc(collection(db, 'tasks'), taskData);
+  return { ...taskData, id: docRef.id };
 };

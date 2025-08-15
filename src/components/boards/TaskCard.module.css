@@ -1,27 +1,29 @@
 .card {
-  background-color: white;
-  border-radius: 8px;
-  padding: 15px;
+  position: relative;
+  background: white;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  border-left: 4px solid #a5d6a7;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.cardContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
-.title {
-  margin: 0 0 8px 0;
-  color: #1b5e20;
-  font-size: 1rem;
-  font-weight: 500;
+.dragHandle {
+  flex-grow: 1;
+  cursor: grab;
 }
 
-.description {
-  margin: 0;
-  color: #4b636e;
-  font-size: 0.875rem;
-  line-height: 1.4;
+.deleteButton {
+  margin-left: 8px;
+  color: #f44336;
+  flex-shrink: 0;
+}
+
+.deleteButton:hover {
+  background-color: rgba(244, 67, 54, 0.1);
 }

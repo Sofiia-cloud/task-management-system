@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Task } from '../../types';
-import { createTask as createTaskApi } from '../../services/api';
+import { createTask as createTaskApi, deleteTask as deleteTaskApi } from '../../services/api';
 
 interface TasksState {
   tasks: Task[];
@@ -49,6 +49,15 @@ const tasksSlice = createSlice({
       state.tasks.push(action.payload);
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createTask.fulfilled, (state, action) => {
+        state.tasks.push(action.payload);
+      })
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+      });
+  },
 });
 
 export const createTask = createAsyncThunk(
@@ -57,6 +66,18 @@ export const createTask = createAsyncThunk(
     try {
       const taskId = await createTaskApi(taskData);
       return { ...taskData, id: taskId };
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const deleteTask = createAsyncThunk(
+  'tasks/delete',
+  async (taskId: string, { rejectWithValue }) => {
+    try {
+      await deleteTaskApi(taskId);
+      return taskId;
     } catch (error) {
       return rejectWithValue(error);
     }
