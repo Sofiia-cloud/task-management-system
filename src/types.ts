@@ -10,9 +10,9 @@ export interface User {
 export interface Board {
   id: string;
   title: string;
+  ownerId: string;
   createdAt?: string;
-  createdBy?: string; // ID пользователя
-  lastModified?: string;
+  isTemp?: boolean;
 }
 
 // Тип для колонки (Column)

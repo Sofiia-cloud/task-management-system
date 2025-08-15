@@ -1,15 +1,38 @@
 import { db } from './firebase';
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+} from 'firebase/firestore';
 import { Board, Task } from '../types';
 
-export const fetchBoards = async (): Promise<Board[]> => {
-  const querySnapshot = await getDocs(collection(db, 'boards'));
-  return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Board);
+export const fetchBoards = async (userId: string): Promise<Board[]> => {
+  const q = query(
+    collection(db, 'boards'),
+    where('ownerId', '==', userId), // Фильтр по владельцу
+  );
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(
+    (doc) =>
+      ({
+        id: doc.id,
+        ...doc.data(),
+      }) as Board,
+  );
 };
 
-export const createBoard = async (boardData: Omit<Board, 'id'>): Promise<string> => {
+export const createBoard = async (
+  boardData: Omit<Board, 'id'>,
+  userId: string,
+): Promise<string> => {
   const docRef = await addDoc(collection(db, 'boards'), {
     ...boardData,
+    ownerId: userId, // Добавляем владельца
     createdAt: new Date().toISOString(),
   });
   return docRef.id;

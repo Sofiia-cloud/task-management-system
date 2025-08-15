@@ -3,14 +3,14 @@ import { useAppDispatch } from './hooks';
 import { fetchBoards } from '../services/api';
 import { setBoards } from '../store/slices/boardsSlice';
 
-export const useBoards = () => {
+export const useBoards = (userId: string) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const loadBoards = async () => {
-      const boards = await fetchBoards();
+      const boards = await fetchBoards(userId); // Передаем userId
       dispatch(setBoards(boards));
     };
     loadBoards();
-  }, [dispatch]);
+  }, [dispatch, userId]);
 };

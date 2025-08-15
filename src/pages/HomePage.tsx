@@ -21,8 +21,10 @@ export const HomePage = () => {
 
   useEffect(() => {
     const loadBoards = async () => {
+      if (!user?.uid) return;
+
       try {
-        const boardsData = await fetchBoards();
+        const boardsData = await fetchBoards(user.uid); // Передаем user.uid
         dispatch(setBoards(boardsData));
       } catch (error) {
         console.error('Failed to load boards:', error);
@@ -31,7 +33,7 @@ export const HomePage = () => {
       }
     };
     loadBoards();
-  }, [dispatch]);
+  }, [dispatch, user]); // Добавляем user в зависимости
 
   const handleCreateClick = () => {
     setDialogOpen(true);
@@ -45,6 +47,7 @@ export const HomePage = () => {
       const newBoard = {
         title,
         createdBy: user.uid,
+        ownerId: user.uid, // Добавляем ownerId
         createdAt: new Date().toISOString(),
       };
 
@@ -57,7 +60,7 @@ export const HomePage = () => {
         }),
       );
 
-      const newBoardId = await createBoard(newBoard);
+      const newBoardId = await createBoard(newBoard, user.uid); // Передаем user.uid
 
       dispatch(removeBoard(tempId));
       dispatch(
@@ -75,10 +78,13 @@ export const HomePage = () => {
       alert('Failed to create board. Please try again.');
     } finally {
       setIsCreating(false);
+      setDialogOpen(false);
     }
   };
 
   const handleDeleteBoard = async (boardId: string) => {
+    if (!user) return;
+
     if (window.confirm('Are you sure you want to delete this board?')) {
       try {
         await deleteBoard(boardId);
@@ -103,6 +109,9 @@ export const HomePage = () => {
     return <div>Loading boards...</div>;
   }
 
+  // Фильтруем доски по владельцу (на случай, если в хранилище есть чужие доски)
+  const userBoards = boards.filter((board) => board.ownerId === user?.uid);
+
   return (
     <div className={styles.container}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -120,7 +129,7 @@ export const HomePage = () => {
         className={styles.createButton}
         disabled={isCreating}
       >
-        Create New Board
+        {isCreating ? 'Creating...' : 'Create New Board'}
       </Button>
 
       <CreateBoardDialog
@@ -130,9 +139,15 @@ export const HomePage = () => {
       />
 
       <div className={styles.boardsGrid}>
-        {boards.map((board) => (
-          <BoardCard key={board.id} board={board} onDelete={handleDeleteBoard} />
-        ))}
+        {userBoards.length > 0 ? (
+          userBoards.map((board) => (
+            <BoardCard key={board.id} board={board} onDelete={handleDeleteBoard} />
+          ))
+        ) : (
+          <Typography variant="body1" className={styles.emptyMessage}>
+            You do not have any boards yet. Create your first board!
+          </Typography>
+        )}
       </div>
     </div>
   );

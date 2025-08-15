@@ -9,13 +9,16 @@ import styles from './BoardPage.module.css';
 export const BoardPage = () => {
   const { boardId } = useParams();
   const dispatch = useAppDispatch();
-  const board = useAppSelector((state) => state.boards.boards.find((b) => b.id === boardId));
+  const { user } = useAppSelector((state) => state.auth);
+  const board = useAppSelector((state) =>
+    state.boards.boards.find((b) => b.id === boardId && b.ownerId === user?.uid),
+  );
 
   useEffect(() => {
-    if (boardId) {
+    if (boardId && user?.uid) {
       dispatch(setCurrentBoard(boardId));
     }
-  }, [boardId, dispatch]);
+  }, [boardId, user, dispatch]);
 
   if (!board) {
     return <div className={styles.notFound}>Board not found</div>;
