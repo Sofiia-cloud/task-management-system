@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useDroppable } from '@dnd-kit/core';
+import { useDroppable, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TaskCard } from './TaskCard';
 import { CreateTaskForm } from './CreateTaskForm';
 import { Button } from '@mui/material';
 import { Task } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
-import { createTask, moveTaskAsync } from '../../store/slices/tasksSlice';
+import { createTask, moveTaskAsync, moveTaskLocally } from '../../store/slices/tasksSlice';
 import styles from './Column.module.css';
 
 interface ColumnProps {
@@ -17,13 +17,14 @@ interface ColumnProps {
 }
 
 export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
-  const { setNodeRef } = useDroppable({
+  const { setNodeRef, isOver } = useDroppable({
     id,
     data: {
       type: 'column',
       columnId: id,
     },
   });
+
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
@@ -50,21 +51,33 @@ export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
     }
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active && over && active.id !== over.id) {
+    if (!over) return;
+
+    // Проверяем, что перетаскивание завершено над другой колонкой
+    if (active.id !== over.id && over.data.current?.type === 'column') {
+      // Сначала локально обновляем состояние для мгновенного отклика
+      dispatch(
+        moveTaskLocally({
+          taskId: active.id.toString(),
+          newColumnId: over.id.toString(),
+        }),
+      );
+
+      // Затем синхронизируем с сервером
       dispatch(
         moveTaskAsync({
-          taskId: active.id,
-          newColumnId: over.data.current?.columnId || id,
+          taskId: active.id.toString(),
+          newColumnId: over.id.toString(),
         }),
       );
     }
   };
 
   return (
-    <div ref={setNodeRef} className={styles.column}>
+    <div ref={setNodeRef} className={`${styles.column} ${isOver ? styles.columnOver : ''}`}>
       <div className={styles.columnHeader}>
         <h3 className={styles.columnTitle}>{title}</h3>
         <Button
@@ -78,9 +91,17 @@ export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
       </div>
 
       <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
-        <div className={styles.tasksContainer} onDragEnd={handleDragEnd}>
+        <div className={styles.tasksContainer}>
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} columnId={id} />
+            <TaskCard
+              key={task.id}
+              task={task}
+              columnId={id}
+              transition={{
+                duration: 150,
+                easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+              }}
+            />
           ))}
         </div>
       </SortableContext>

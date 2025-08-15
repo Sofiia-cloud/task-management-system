@@ -9,6 +9,10 @@ import { deleteTask } from '../../store/slices/tasksSlice';
 interface TaskCardProps {
   task: Task;
   columnId: string;
+  transition?: {
+    duration: number;
+    easing: string;
+  };
 }
 
 export const TaskCard = ({ task, columnId }: TaskCardProps) => {

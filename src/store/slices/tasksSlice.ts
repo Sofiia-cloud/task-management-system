@@ -118,21 +118,30 @@ export const moveTaskAsync = createAsyncThunk(
   'tasks/move',
   async (
     { taskId, newColumnId }: { taskId: string; newColumnId: string },
-    { getState, rejectWithValue },
+    { getState, dispatch },
   ) => {
+    const state = getState() as RootState;
+    const task = state.tasks.tasks.find((t: Task) => t.id === taskId);
+
+    if (!task) {
+      throw new Error('Task not found');
+    }
+
+    // Сохраняем предыдущую колонку для отката в случае ошибки
+    const previousColumnId = task.columnId;
+
     try {
-      const state = getState() as RootState;
-      const task = state.tasks.tasks.find((t: Task) => t.id === taskId);
+      // Сначала локально обновляем состояние для мгновенного отклика
+      dispatch(moveTaskLocally({ taskId, newColumnId }));
 
-      if (!task) {
-        throw new Error('Task not found');
-      }
-
+      // Затем синхронизируем с сервером
       await updateTaskApi(taskId, { columnId: newColumnId });
 
       return { taskId, newColumnId };
     } catch (error) {
-      return rejectWithValue(error);
+      // В случае ошибки откатываем изменения
+      dispatch(moveTaskLocally({ taskId, newColumnId: previousColumnId }));
+      throw error;
     }
   },
 );
