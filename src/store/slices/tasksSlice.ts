@@ -4,7 +4,9 @@ import {
   createTask as createTaskApi,
   deleteTask as deleteTaskApi,
   fetchTasks as fetchTasksApi,
+  updateTask as updateTaskApi,
 } from '../../services/api';
+import type { RootState } from '..';
 
 interface TasksState {
   tasks: Task[];
@@ -39,7 +41,7 @@ const tasksSlice = createSlice({
     removeTask: (state, action: PayloadAction<string>) => {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
-    moveTask: (state, action) => {
+    moveTaskLocally: (state, action: PayloadAction<{ taskId: string; newColumnId: string }>) => {
       const { taskId, newColumnId } = action.payload;
       const task = state.tasks.find((t) => t.id === taskId);
       if (task) {
@@ -66,6 +68,13 @@ const tasksSlice = createSlice({
           ...state.tasks.filter((task) => task.boardId !== action.meta.arg),
           ...action.payload,
         ];
+      })
+      .addCase(moveTaskAsync.fulfilled, (state, action) => {
+        const { taskId, newColumnId } = action.payload;
+        const task = state.tasks.find((t) => t.id === taskId);
+        if (task) {
+          task.columnId = newColumnId;
+        }
       });
   },
 });
@@ -93,6 +102,7 @@ export const deleteTask = createAsyncThunk(
     }
   },
 );
+
 export const fetchTasks = createAsyncThunk(
   'tasks/fetch',
   async (boardId: string, { rejectWithValue }) => {
@@ -104,5 +114,29 @@ export const fetchTasks = createAsyncThunk(
   },
 );
 
-export const { addTask, removeTask, moveTask, setTasks, addTaskLocally } = tasksSlice.actions;
+export const moveTaskAsync = createAsyncThunk(
+  'tasks/move',
+  async (
+    { taskId, newColumnId }: { taskId: string; newColumnId: string },
+    { getState, rejectWithValue },
+  ) => {
+    try {
+      const state = getState() as RootState;
+      const task = state.tasks.tasks.find((t: Task) => t.id === taskId);
+
+      if (!task) {
+        throw new Error('Task not found');
+      }
+
+      await updateTaskApi(taskId, { columnId: newColumnId });
+
+      return { taskId, newColumnId };
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const { addTask, removeTask, moveTaskLocally, setTasks, addTaskLocally } =
+  tasksSlice.actions;
 export default tasksSlice.reducer;

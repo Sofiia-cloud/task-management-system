@@ -9,7 +9,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
-import { moveTask } from '../../store/slices/tasksSlice';
+import { moveTaskAsync } from '../../store/slices/tasksSlice';
 import { Column } from './Column';
 import { Task } from '../../types';
 import styles from './Board.module.css';
@@ -40,7 +40,7 @@ export const Board = ({ tasks }: BoardProps) => {
     if (!over || active.id === over.id) return;
 
     dispatch(
-      moveTask({
+      moveTaskAsync({
         taskId: active.id.toString(),
         newColumnId: over.data.current?.columnId || over.id.toString(),
       }),

@@ -6,7 +6,7 @@ import { CreateTaskForm } from './CreateTaskForm';
 import { Button } from '@mui/material';
 import { Task } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
-import { createTask } from '../../store/slices/tasksSlice';
+import { createTask, moveTaskAsync } from '../../store/slices/tasksSlice';
 import styles from './Column.module.css';
 
 interface ColumnProps {
@@ -17,7 +17,13 @@ interface ColumnProps {
 }
 
 export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
-  const { setNodeRef } = useDroppable({ id });
+  const { setNodeRef } = useDroppable({
+    id,
+    data: {
+      type: 'column',
+      columnId: id,
+    },
+  });
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
@@ -25,17 +31,36 @@ export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
   const handleTaskCreate = async (title: string, description?: string) => {
     if (!user || !boardId) return;
 
-    await dispatch(
-      createTask({
-        title,
-        description,
-        columnId: id,
-        boardId,
-        createdBy: user.uid,
-        createdAt: new Date().toISOString(),
-        order: tasks.length,
-      }),
-    );
+    try {
+      await dispatch(
+        createTask({
+          title,
+          description,
+          columnId: id,
+          boardId,
+          createdBy: user.uid,
+          createdAt: new Date().toISOString(),
+          order: tasks.length,
+        }),
+      ).unwrap();
+
+      setIsCreateFormOpen(false);
+    } catch (error) {
+      console.error('Failed to create task:', error);
+    }
+  };
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+
+    if (active && over && active.id !== over.id) {
+      dispatch(
+        moveTaskAsync({
+          taskId: active.id,
+          newColumnId: over.data.current?.columnId || id,
+        }),
+      );
+    }
   };
 
   return (
@@ -53,7 +78,7 @@ export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
       </div>
 
       <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
-        <div className={styles.tasksContainer}>
+        <div className={styles.tasksContainer} onDragEnd={handleDragEnd}>
           {tasks.map((task) => (
             <TaskCard key={task.id} task={task} columnId={id} />
           ))}
