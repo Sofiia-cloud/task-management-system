@@ -5,6 +5,8 @@ import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAppDispatch } from '../../hooks/hooks';
 import { deleteTask } from '../../store/slices/tasksSlice';
+import { CSS } from '@dnd-kit/utilities';
+import React from 'react';
 
 interface TaskCardProps {
   task: Task;
@@ -15,40 +17,39 @@ interface TaskCardProps {
   };
 }
 
-export const TaskCard = ({ task, columnId }: TaskCardProps) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+export const TaskCard = ({ task, columnId, transition }: TaskCardProps) => {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task.id,
     data: { columnId },
   });
   const dispatch = useAppDispatch();
 
-  const handleDelete = async (e: React.MouseEvent) => {
+  const handleDelete = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (window.confirm('Are you sure you want to delete this task?')) {
-      try {
-        await dispatch(deleteTask(task.id)).unwrap();
-      } catch (error) {
-        console.error('Failed to delete task:', error);
-      }
+      dispatch(deleteTask(task.id));
     }
   };
 
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : {};
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 100 : 'auto',
+    // Важно для работы перетаскивания
+    touchAction: 'none',
+  };
 
   return (
-    <div ref={setNodeRef} className={styles.card} style={style} {...attributes}>
+    <div ref={setNodeRef} style={style} className={styles.card} {...attributes} {...listeners}>
       <div className={styles.cardContent}>
-        <div {...listeners} className={styles.dragHandle}>
-          {}
+        <div className={styles.dragHandle}>
           <h4 className={styles.title}>{task.title}</h4>
           {task.description && <p className={styles.description}>{task.description}</p>}
         </div>
         <IconButton
-          onClick={handleDelete}
+          onClick={(e: React.MouseEvent) => handleDelete(e)}
+          onTouchEnd={(e: React.TouchEvent) => handleDelete(e)}
           size="small"
           className={styles.deleteButton}
           aria-label="delete task"

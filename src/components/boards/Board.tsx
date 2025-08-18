@@ -3,6 +3,7 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -25,6 +26,13 @@ export const Board = ({ tasks }: BoardProps) => {
 
   const sensors = useSensors(
     useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      // Более чувствительные настройки для мобильных устройств
+      activationConstraint: {
+        delay: 150,
+        tolerance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: (event) => {
         if (event.key === 'ArrowLeft') return { x: -1, y: 0 };

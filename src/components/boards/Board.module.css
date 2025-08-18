@@ -5,11 +5,20 @@
   min-height: calc(100vh - 100px);
   background-color: #f5faf7;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 20px;
+  /* Исправление для скролла */
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
 }
 
 @media (max-width: 768px) {
   .boardContainer {
     flex-direction: column;
     padding: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100vh;
   }
 }

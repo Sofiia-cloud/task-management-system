@@ -2,7 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from 'firebase/auth';
 
 interface AuthState {
-  user: User | null;
+  user: {
+    uid: string;
+    email: string | null;
+    displayName: string | null;
+    // Только простые, сериализуемые данные
+  } | null;
   loading: boolean;
   error: string | null;
 }

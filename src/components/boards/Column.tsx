@@ -93,15 +93,7 @@ export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
       <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
         <div className={styles.tasksContainer}>
           {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              columnId={id}
-              transition={{
-                duration: 150,
-                easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-              }}
-            />
+            <TaskCard key={task.id} task={task} columnId={id} />
           ))}
         </div>
       </SortableContext>
