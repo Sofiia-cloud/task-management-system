@@ -46,18 +46,21 @@ body {
   background: var(--primary);
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   overflow: hidden;
 }
 
 @media (hover: none) {
-  html, body {
+  html,
+  body {
     overflow: hidden;
     touch-action: none;
     height: 100%;
   }
-  
+
   .task-card {
     padding: 12px;
   }

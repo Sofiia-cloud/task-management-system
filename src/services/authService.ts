@@ -51,15 +51,21 @@ export const registerWithEmail =
       const result = await createUserWithEmailAndPassword(auth, email, password);
       dispatch(setUser(result.user));
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       let errorMessage = 'Registration failed';
 
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'Email is already in use';
-      } else if (error.code === 'auth/weak-password') {
-        errorMessage = 'Password should be at least 6 characters';
-      } else if (error.code === 'auth/invalid-email') {
-        errorMessage = 'Invalid email address';
+      if (error instanceof Error && 'code' in error) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'Email is already in use';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'Password should be at least 6 characters';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address';
+            break;
+        }
       }
 
       dispatch(setError(errorMessage));

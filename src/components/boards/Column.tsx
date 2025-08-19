@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useDroppable, DragEndEvent } from '@dnd-kit/core';
+import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TaskCard } from './TaskCard';
 import { CreateTaskForm } from './CreateTaskForm';
 import { Button } from '@mui/material';
 import { Task } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
-import { createTask, moveTaskAsync, moveTaskLocally } from '../../store/slices/tasksSlice';
+import { createTask } from '../../store/slices/tasksSlice';
 import styles from './Column.module.css';
 
 interface ColumnProps {
@@ -48,31 +48,6 @@ export const Column = ({ id, title, tasks, boardId }: ColumnProps) => {
       setIsCreateFormOpen(false);
     } catch (error) {
       console.error('Failed to create task:', error);
-    }
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (!over) return;
-
-    // Проверяем, что перетаскивание завершено над другой колонкой
-    if (active.id !== over.id && over.data.current?.type === 'column') {
-      // Сначала локально обновляем состояние для мгновенного отклика
-      dispatch(
-        moveTaskLocally({
-          taskId: active.id.toString(),
-          newColumnId: over.id.toString(),
-        }),
-      );
-
-      // Затем синхронизируем с сервером
-      dispatch(
-        moveTaskAsync({
-          taskId: active.id.toString(),
-          newColumnId: over.id.toString(),
-        }),
-      );
     }
   };
 

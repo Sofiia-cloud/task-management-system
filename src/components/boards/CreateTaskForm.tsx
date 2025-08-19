@@ -16,7 +16,7 @@ interface CreateTaskFormProps {
   boardId: string;
 }
 
-export const CreateTaskForm = ({ open, onClose, onCreate, boardId }: CreateTaskFormProps) => {
+export const CreateTaskForm = ({ open, onClose, onCreate }: CreateTaskFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);

@@ -83,7 +83,10 @@ export interface DragResult {
     droppableId: string;
     index: number;
   };
-  combine?: any;
+  combine?: {
+    draggableId: string;
+    droppableId: string;
+  } | null;
 }
 
 // Тип для формы создания/редактирования доски
