@@ -8,7 +8,7 @@ export const useBoards = (userId: string) => {
 
   useEffect(() => {
     const loadBoards = async () => {
-      const boards = await fetchBoards(userId); // Передаем userId
+      const boards = await fetchBoards(userId);
       dispatch(setBoards(boards));
     };
     loadBoards();

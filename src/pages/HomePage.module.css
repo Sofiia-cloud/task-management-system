@@ -39,7 +39,7 @@
 }
 
 .emptyMessage {
-  grid-column: 1 / -1; /* Занимает всю ширину сетки */
+  grid-column: 1 / -1; 
   text-align: center;
   color: #757575;
   padding: 40px;

@@ -127,19 +127,15 @@ export const moveTaskAsync = createAsyncThunk(
       throw new Error('Task not found');
     }
 
-    // Сохраняем предыдущую колонку для отката в случае ошибки
     const previousColumnId = task.columnId;
 
     try {
-      // Сначала локально обновляем состояние для мгновенного отклика
       dispatch(moveTaskLocally({ taskId, newColumnId }));
 
-      // Затем синхронизируем с сервером
       await updateTaskApi(taskId, { columnId: newColumnId });
 
       return { taskId, newColumnId };
     } catch (error) {
-      // В случае ошибки откатываем изменения
       dispatch(moveTaskLocally({ taskId, newColumnId: previousColumnId }));
       throw error;
     }

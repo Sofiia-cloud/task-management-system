@@ -6,7 +6,6 @@ interface AuthState {
     uid: string;
     email: string | null;
     displayName: string | null;
-    // Только простые, сериализуемые данные
   } | null;
   loading: boolean;
   error: string | null;

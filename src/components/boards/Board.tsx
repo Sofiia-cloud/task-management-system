@@ -27,7 +27,6 @@ export const Board = ({ tasks }: BoardProps) => {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor, {
-      // Более чувствительные настройки для мобильных устройств
       activationConstraint: {
         delay: 150,
         tolerance: 5,

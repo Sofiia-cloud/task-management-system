@@ -1,4 +1,3 @@
-/* Drag and drop animations */
 .dragOverlay {
   opacity: 0.9;
   transform: scale(1.02);
@@ -6,7 +5,6 @@
   z-index: 1000;
 }
 
-/* Task enter animation */
 @keyframes taskEnter {
   from {
     opacity: 0;
@@ -22,7 +20,6 @@
   animation: taskEnter 0.3s ease forwards;
 }
 
-/* Fade animation */
 @keyframes fadeIn {
   from {
     opacity: 0;

@@ -24,7 +24,7 @@ export const HomePage = () => {
       if (!user?.uid) return;
 
       try {
-        const boardsData = await fetchBoards(user.uid); // Передаем user.uid
+        const boardsData = await fetchBoards(user.uid);
         dispatch(setBoards(boardsData));
       } catch (error) {
         console.error('Failed to load boards:', error);
@@ -33,7 +33,7 @@ export const HomePage = () => {
       }
     };
     loadBoards();
-  }, [dispatch, user]); // Добавляем user в зависимости
+  }, [dispatch, user]);
 
   const handleCreateClick = () => {
     setDialogOpen(true);
@@ -47,7 +47,7 @@ export const HomePage = () => {
       const newBoard = {
         title,
         createdBy: user.uid,
-        ownerId: user.uid, // Добавляем ownerId
+        ownerId: user.uid,
         createdAt: new Date().toISOString(),
       };
 
@@ -60,7 +60,7 @@ export const HomePage = () => {
         }),
       );
 
-      const newBoardId = await createBoard(newBoard, user.uid); // Передаем user.uid
+      const newBoardId = await createBoard(newBoard, user.uid);
 
       dispatch(removeBoard(tempId));
       dispatch(
@@ -109,7 +109,6 @@ export const HomePage = () => {
     return <div>Loading boards...</div>;
   }
 
-  // Фильтруем доски по владельцу (на случай, если в хранилище есть чужие доски)
   const userBoards = boards.filter((board) => board.ownerId === user?.uid);
 
   return (

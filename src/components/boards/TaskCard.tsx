@@ -55,7 +55,7 @@ export const TaskCard = ({ task, columnId }: TaskCardProps) => {
           size="small"
           className={styles.deleteButton}
           aria-label="delete task"
-          onMouseDown={(e) => e.stopPropagation()} // Важно для предотвращения конфликтов
+          onMouseDown={(e) => e.stopPropagation()}
         >
           <DeleteIcon fontSize="small" />
         </IconButton>

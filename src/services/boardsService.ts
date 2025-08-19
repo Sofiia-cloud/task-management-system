@@ -8,7 +8,7 @@ export const createBoard = (title: string, userId: string) => async (dispatch: A
   try {
     const docRef = await addDoc(collection(db, 'boards'), {
       title,
-      ownerId: userId, // Добавляем владельца
+      ownerId: userId,
       createdAt: new Date().toISOString(),
     });
     dispatch(
@@ -33,10 +33,7 @@ export const deleteBoard = (boardId: string) => async (dispatch: AppDispatch) =>
 };
 
 export const subscribeToBoards = (userId: string) => (dispatch: AppDispatch) => {
-  const q = query(
-    collection(db, 'boards'),
-    where('ownerId', '==', userId), // Фильтр по владельцу
-  );
+  const q = query(collection(db, 'boards'), where('ownerId', '==', userId));
 
   return onSnapshot(q, (snapshot) => {
     const boards = snapshot.docs.map((doc) => ({
